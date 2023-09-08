@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Player
   attr_accessor :guesses
 
@@ -24,6 +26,10 @@ class Player
     end
     @turns -= 1
     code
+  end
+
+  def record_feedback(feedback)
+    @feedback = feedback
   end
 
   private

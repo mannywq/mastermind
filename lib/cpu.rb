@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require_relative './player'
+require 'debug'
 
 class CPU
   attr_accessor :guesses
@@ -6,8 +9,8 @@ class CPU
   def initialize
     @first_guess = '1122'
     @possible_codes = ('1'..'6').to_a.repeated_permutation(4).to_a.map { |code| code.join('') }
+    @impossible_codes = []
     @guesses = []
-    @feedback = {}
     @num_guesses = 0
     @next_guess = nil
   end
@@ -35,20 +38,22 @@ class CPU
     @feedback = feedback
   end
 
-  def calc_next_guess(game)
+  def calc_next_guess(feedback, guess)
     puts 'Calculating next guess'
-    if @feedback.values.all? { |v| v == 0 }
-      puts "Rejecting all options including #{@guesses[-1]}"
+    if feedback == [0, 0]
+      puts "Rejecting all options including #{guess}"
+      @impossible_codes += guess.chars
       @possible_codes.reject! do |code|
-        code.chars.any? { |digit| guesses[-1].include?(digit) }
+        code.chars.any? { |digit| @impossible_codes.include?(digit) }
       end
     else
-      puts "Selecting all other options with feedback #{@feedback}"
+      puts 'Generating better options'
       @possible_codes.select! do |code|
-        game.check_guess(code) == @feedback
+        feedback = Game.check_guess(guess, code)
+        feedback[0] == @feedback[0] && feedback[1] == @feedback[1]
       end
-
     end
-    @next_guess = @possible_codes.sample
+    puts @possible_codes.length
+    @next_guess = @possible_codes[0]
   end
 end

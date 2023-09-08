@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Colours
   CODE_COLOURS =
     {
@@ -10,8 +12,10 @@ module Colours
     }.freeze
 
   HINT_COLOURS = {
-    '?' => "\e[30m \u25CF \e[0m",
-    '!' => "\e[32m \u25CF \e[0m"
+    '?' => "\e[97m \u25CF \e[0m",
+    '!' => "\e[32m \u25CF \e[0m",
+    'x' => "\e[31m \u274C \e[0m"
+
   }.freeze
 
   def colored_numbers(number_array)
